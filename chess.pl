@@ -415,7 +415,45 @@ report_move(Color, Board, From_File-From_Rank, To_File-To_Rank, Rating) :-
 /*         KEEP THE NAME print_board, JUST CHANGE THE IMPLEMENTATION*/
 /* ----------------------------------------------------------------------- */
 print_board(Board) :-
-    write(Board), nl.
+    write('  +----+----+----+----+----+----+----+----+'), nl, %Print top border
+    print_rank(8, Board), %Following code will print cooridinates for board
+    print_rank(7, Board),
+    print_rank(6, Board),
+    print_rank(5, Board),
+    print_rank(4, Board),
+    print_rank(3, Board),
+    print_rank(2, Board),
+    print_rank(1, Board),
+    write('    a    b    c    d    e    f    g    h'), nl.
+
+%Print each row
+print_rank(Rank, Board) :-
+    write(Rank), write(' | '),
+    print_file(a, Rank, Board),
+    print_file(b, Rank, Board),
+    print_file(c, Rank, Board),
+    print_file(d, Rank, Board),
+    print_file(e, Rank, Board),
+    print_file(f, Rank, Board),
+    print_file(g, Rank, Board),
+    print_file(h, Rank, Board),
+    nl,
+    write('  +----+----+----+----+----+----+----+----+'), nl. %Print bottom border
+
+%Print pieces and spacers
+print_file(File, Rank, Board) :-
+    (member(piece(File-Rank, black, Type), Board) -> write('*'), print_piece(Type);
+     member(piece(File-Rank, white, Type), Board) -> write(' '), print_piece(Type);
+     write('  ')),
+    write(' | ').
+
+%Print specified piece
+print_piece(king)   :- write('k').
+print_piece(queen)  :- write('q').
+print_piece(rook)   :- write('r').
+print_piece(bishop) :- write('b').
+print_piece(knight) :- write('n').
+print_piece(pawn)   :- write('p').
 /* ----------------------------------------------------------------------- */
 
 
