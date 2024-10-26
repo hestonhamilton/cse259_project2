@@ -89,19 +89,23 @@ init_board([
 
 /* Main play loop for playerA and playerB */
 play(Board) :-
-    play_turn(playerA, Board).  % Starts the game with playerA (white)
+    % Move playerA (white) automatically and print the move
+    execute_command(playerA, Board, NewBoard),
+    
+    % Move playerB (black) automatically and print the move
+    execute_command(playerB, NewBoard, NextNewBoard),
+    
+    % Continue playing with the updated board state
+    play(NextNewBoard).
 
-/* Play turns for playerA and playerB in a loop until the game is over */
-play_turn(Player, Board) :-
-    execute_command(Player, Board, NewBoard),  % Execute Player's move and generate the new board state
-    (   % If we reach here, the game is not over yet
-        opposite(Player, NextPlayer),          % Switch to the next Player
-        play_turn(NextPlayer, NewBoard)        % Continue playing recursively until the game ends
-    ).
-
-/* Automated execution of move for PlayerA or PlayerB */
+/* Automated moves for PlayerA or PlayerB, move reporting via respond_to */
 execute_command(Player, Board, NewBoard) :-
-    respond_to(Player, Board, NewBoard), !.
+    respond_to(Player, Board, NewBoard), 
+    !.
+
+execute_command(X, Board, _) :-     % Use to catch unexpected situations
+    write('What?'),
+    halt(0).
 
 /* ----------------------------------------------------------------------- */
 /* parameters */
