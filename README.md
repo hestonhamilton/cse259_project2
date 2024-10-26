@@ -5,12 +5,7 @@
 - **Member 2:** Vaughn Hoffler
 
 ## Project Overview
-This project implements a chess game in Prolog where two AI players (playerA and playerB) compete against each other. The game follows standard chess rules with a few modifications:
-
-- En passant captures are not allowed
-- Pawns are promoted to queens only
-- Draw by repetition or capture are not allowed
-- Kings may castle out of or through check (but not into check)
+This project implements a chess game in Prolog where two AI players (playerA and playerB) compete against each other. The game follows standard chess rules with a few modifications.
 
 ## Project Structure
 The main components of the project are:
@@ -45,7 +40,6 @@ The main components of the project are:
 
 ### Task 3: Auto-Competition
 - Modified the play/1 predicate for automatic gameplay
-- Integrated playerA with existing game loop
 - Enabled autonomous competition between playerA and playerB
 
 ## Running the Game
@@ -75,7 +69,6 @@ Example: `e2e4` moves the piece from e2 to e4
 
 - No en passant captures
 - Limited pawn promotion (queens only)
-- No draw detection for repetition or insufficient material
 - Castling implementation has modified rules
 
 ## Requirements

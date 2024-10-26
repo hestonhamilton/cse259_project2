@@ -89,34 +89,19 @@ init_board([
 
 /* Main play loop for playerA and playerB */
 play(Board) :-
-    play_turn(playerA, Board).
+    play_turn(playerA, Board).  % Starts the game with playerA (white)
 
 /* Play turns for playerA and playerB in a loop until the game is over */
 play_turn(Player, Board) :-
-    execute_command(Player, Board, NewBoard),        % Execute Player's move
-    (game_over(NewBoard) ->                          % Check if the game is over
-        display_winner(NewBoard);                    % Display the winner
-        (opposite(Player, NextPlayer),               % Switch to the other player
-         play_turn(NextPlayer, NewBoard))            % Continue playing with the next player
-).
+    execute_command(Player, Board, NewBoard),  % Execute Player's move and generate the new board state
+    (   % If we reach here, the game is not over yet
+        opposite(Player, NextPlayer),          % Switch to the next Player
+        play_turn(NextPlayer, NewBoard)        % Continue playing recursively until the game ends
+    ).
 
 /* Automated execution of move for PlayerA or PlayerB */
 execute_command(Player, Board, NewBoard) :-
     respond_to(Player, Board, NewBoard), !.
-
-/* Game Over Logic - Determines if the game is over by checking for checkmate */
-game_over(Board) :-
-    % Check if either player has no king left (checkmate)
-    \+ member(piece(_, white, king), Board);
-    \+ member(piece(_, black, king), Board).
-
-/* Display the winner based on the game state */
-display_winner(Board) :-
-    ( \+ member(piece(_, white, king), Board) ->
-        write('Game over. Black (playerB) wins!'), nl;
-    \+ member(piece(_, black, king), Board) ->
-        write('Game over. White (playerA) wins!'), nl
-    ).     
 
 /* ----------------------------------------------------------------------- */
 /* parameters */
