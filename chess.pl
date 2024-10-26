@@ -87,74 +87,36 @@ init_board([
 /* MODIFY THE CODE SO THAT playerA AND playerB AUTO-COMPETE */
 /* ----------------------------------------------------------------------- */
 
-/* ----------------------------------------------------------------------- */
-/* TASK-3: Main play loop for playerA and playerB */
-/* ----------------------------------------------------------------------- */
-
+/* Main play loop for playerA and playerB */
 play(Board) :-
-    % PlayerA's move (automated)
-    execute_command(playerA, Board, NewBoard),
-    % Check if the game is over after PlayerA's move
-    (game_over(NewBoard) ->
-        display_winner(NewBoard),
-        halt;  % Terminate the program if the game is over
-    % PlayerB's move (automated)
-    execute_command(playerB, NewBoard, NextBoard),
-    % Check if the game is over after PlayerB's move
-    (game_over(NextBoard) ->
-        display_winner(NextBoard),
-        halt;  % Terminate the program if the game is over
-    % Continue playing if the game is not over
-    play(NextBoard)
-    )).
+    play_turn(playerA, Board).
 
-/* ----------------------------------------------------------------------- */
-/* TASK-3: Game Over Logic */
-/* ----------------------------------------------------------------------- */
+/* Play turns for playerA and playerB in a loop until the game is over */
+play_turn(Player, Board) :-
+    execute_command(Player, Board, NewBoard),        % Execute Player's move
+    (game_over(NewBoard) ->                          % Check if the game is over
+        display_winner(NewBoard);                    % Display the winner
+        (opposite(Player, NextPlayer),               % Switch to the other player
+         play_turn(NextPlayer, NewBoard))            % Continue playing with the next player
+).
 
-% game_over/1: Determines if the game is over by checking for checkmate or stalemate
+/* Automated execution of move for PlayerA or PlayerB */
+execute_command(Player, Board, NewBoard) :-
+    respond_to(Player, Board, NewBoard), !.
+
+/* Game Over Logic - Determines if the game is over by checking for checkmate */
 game_over(Board) :-
     % Check if either player has no king left (checkmate)
     \+ member(piece(_, white, king), Board);
     \+ member(piece(_, black, king), Board).
 
-/* ----------------------------------------------------------------------- */
-/* TASK-3: Display Winner */
-/* ----------------------------------------------------------------------- */
-
-% display_winner/1: Displays the winner based on the game state
+/* Display the winner based on the game state */
 display_winner(Board) :-
     ( \+ member(piece(_, white, king), Board) ->
         write('Game over. Black (playerB) wins!'), nl;
     \+ member(piece(_, black, king), Board) ->
         write('Game over. White (playerA) wins!'), nl
-    ).
-
-/* ----------------------------------------------------------------------- */
-/* TASK-3: Execute Move Commands */
-/* ----------------------------------------------------------------------- */
-
-% Automated execution of move for PlayerA or PlayerB
-execute_command(Player, Board, NewBoard) :-
-    respond_to(Player, Board, NewBoard), !.
-
-% Fallback for unexpected commands
-execute_command(_, Board, _) :-
-    write('What?'),
-    halt(0).
-
-/* ----------------------------------------------------------------------- */
-/* TASK-3: Player Movement Logic */
-/* ----------------------------------------------------------------------- */
-
-respond_to(Player, Board, OutBoard) :-
-  write('Working...'), nl,
-    % statistics,
-  select_move(Player, Board, From, To, Rating),       % Select the next move
-    % statistics,
-  finish_move(Player, Board, From, To, Rating,        % Finish the next move
-          OutBoard), !.
-
+    ).     
 
 /* ----------------------------------------------------------------------- */
 /* parameters */
