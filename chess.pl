@@ -86,39 +86,74 @@ init_board([
 /* WRITE YOUR CODE FOR TASK-3 HERE */
 /* MODIFY THE CODE SO THAT playerA AND playerB AUTO-COMPETE */
 /* ----------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------- */
+/* TASK-3: Main play loop for playerA and playerB */
+/* ----------------------------------------------------------------------- */
+
 play(Board) :-
-		/* move playerA */
-		/* get_command asks the user for the move to be made. 
-		   modify this so that playerA moves on its own */
-    get_command(Command),
-    execute_command(Command, Board, NewBoard),
+    % PlayerA's move (automated)
+    execute_command(playerA, Board, NewBoard),
+    % Check if the game is over after PlayerA's move
+    (game_over(NewBoard) ->
+        display_winner(NewBoard),
+        halt;  % Terminate the program if the game is over
+    % PlayerB's move (automated)
+    execute_command(playerB, NewBoard, NextBoard),
+    % Check if the game is over after PlayerB's move
+    (game_over(NextBoard) ->
+        display_winner(NextBoard),
+        halt;  % Terminate the program if the game is over
+    % Continue playing if the game is not over
+    play(NextBoard)
+    )).
 
-    /* move playerB */
-    execute_command(playerB, NewBoard, NextNewBoard),
-    play(NextNewBoard).
+/* ----------------------------------------------------------------------- */
+/* TASK-3: Game Over Logic */
+/* ----------------------------------------------------------------------- */
 
+% game_over/1: Determines if the game is over by checking for checkmate or stalemate
+game_over(Board) :-
+    % Check if either player has no king left (checkmate)
+    \+ member(piece(_, white, king), Board);
+    \+ member(piece(_, black, king), Board).
 
+/* ----------------------------------------------------------------------- */
+/* TASK-3: Display Winner */
+/* ----------------------------------------------------------------------- */
 
-/* getting command from the user so that playerA aka white can move */
-get_command(Command) :-
-    nl, write('white move -> '),
-    read(Command), !.
-  
+% display_winner/1: Displays the winner based on the game state
+display_winner(Board) :-
+    ( \+ member(piece(_, white, king), Board) ->
+        write('Game over. Black (playerB) wins!'), nl;
+    \+ member(piece(_, black, king), Board) ->
+        write('Game over. White (playerA) wins!'), nl
+    ).
 
+/* ----------------------------------------------------------------------- */
+/* TASK-3: Execute Move Commands */
+/* ----------------------------------------------------------------------- */
 
-/* execute the move selected */
-execute_command(Move, Board, NewBoard) :-
-         parse_move(Move, From, To),
-         move(Board, From, To, white, Piece),
-         make_move(Board, From, To, NewBoard), !.
-
+% Automated execution of move for PlayerA or PlayerB
 execute_command(Player, Board, NewBoard) :-
     respond_to(Player, Board, NewBoard), !.
 
-execute_command(X, Board, _) :-     % Use to catch unexpected situations
+% Fallback for unexpected commands
+execute_command(_, Board, _) :-
     write('What?'),
     halt(0).
 
+/* ----------------------------------------------------------------------- */
+/* TASK-3: Player Movement Logic */
+/* ----------------------------------------------------------------------- */
+
+respond_to(Player, Board, OutBoard) :-
+  write('Working...'), nl,
+    % statistics,
+  select_move(Player, Board, From, To, Rating),       % Select the next move
+    % statistics,
+  finish_move(Player, Board, From, To, Rating,        % Finish the next move
+          OutBoard), !.
 
 
 /* ----------------------------------------------------------------------- */
