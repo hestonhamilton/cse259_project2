@@ -86,40 +86,26 @@ init_board([
 /* WRITE YOUR CODE FOR TASK-3 HERE */
 /* MODIFY THE CODE SO THAT playerA AND playerB AUTO-COMPETE */
 /* ----------------------------------------------------------------------- */
-play(Board) :-
-		/* move playerA */
-		/* get_command asks the user for the move to be made. 
-		   modify this so that playerA moves on its own */
-    get_command(Command),
-    execute_command(Command, Board, NewBoard),
 
-    /* move playerB */
+/* Main play loop for playerA and playerB */
+play(Board) :-
+    % Move playerA (white) automatically and print the move
+    execute_command(playerA, Board, NewBoard),
+    
+    % Move playerB (black) automatically and print the move
     execute_command(playerB, NewBoard, NextNewBoard),
+    
+    % Continue playing with the updated board state
     play(NextNewBoard).
 
-
-
-/* getting command from the user so that playerA aka white can move */
-get_command(Command) :-
-    nl, write('white move -> '),
-    read(Command), !.
-  
-
-
-/* execute the move selected */
-execute_command(Move, Board, NewBoard) :-
-         parse_move(Move, From, To),
-         move(Board, From, To, white, Piece),
-         make_move(Board, From, To, NewBoard), !.
-
+/* Automated moves for PlayerA or PlayerB, move reporting via respond_to */
 execute_command(Player, Board, NewBoard) :-
-    respond_to(Player, Board, NewBoard), !.
+    respond_to(Player, Board, NewBoard), 
+    !.
 
 execute_command(X, Board, _) :-     % Use to catch unexpected situations
     write('What?'),
     halt(0).
-
-
 
 /* ----------------------------------------------------------------------- */
 /* parameters */
@@ -189,7 +175,7 @@ bookA( [ state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % e2e4
     piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-7, e-5).
 
 
-% Code for alpha beta prunning
+% Code for alpha beta pruning
 % Player is playerA, Turn is the player whose turn is to play
 sufficientA(Player, Board, Turn, [], Depth, Alpha, Beta, Move, Val, Move, Val) :- !.
 sufficientA(Player, Board, Turn, Moves, Depth, Alpha, Beta, Move, Val, Move, Val) :-
@@ -269,7 +255,7 @@ bookB( [ state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % e2e4
     piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-7, e-5).
 
 
-% Code for alpha beta prunning
+% Code for alpha beta pruning
 % Player is playerB, Turn is the player whose turn is to play
 sufficientB(Player, Board, Turn, [], Depth, Alpha, Beta, Move, Val, Move, Val) :- !.
 sufficientB(Player, Board, Turn, Moves, Depth, Alpha, Beta, Move, Val, Move, Val) :-
@@ -484,8 +470,8 @@ report_move(Color, Board, From_File-From_Rank, To_File-To_Rank, Rating) :-
 /*         KEEP THE NAME print_board, JUST CHANGE THE IMPLEMENTATION*/
 /* ----------------------------------------------------------------------- */
 print_board(Board) :-
-    write('  +----+----+----+----+----+----+----+----+'), nl, %Print top border
-    print_rank(8, Board), %Following code will print cooridinates for board
+    write('  +----+----+----+----+----+----+----+----+'), nl, % Print top border
+    print_rank(8, Board), % Following code will print coordinates for board
     print_rank(7, Board),
     print_rank(6, Board),
     print_rank(5, Board),
@@ -507,16 +493,16 @@ print_rank(Rank, Board) :-
     print_file(g, Rank, Board),
     print_file(h, Rank, Board),
     nl,
-    write('  +----+----+----+----+----+----+----+----+'), nl. %Print bottom border
+    write('  +----+----+----+----+----+----+----+----+'), nl. % Print bottom border
 
-%Print pieces and spacers
+% Print pieces and spacers
 print_file(File, Rank, Board) :-
     (member(piece(File-Rank, black, Type), Board) -> write('*'), print_piece(Type);
      member(piece(File-Rank, white, Type), Board) -> write(' '), print_piece(Type);
      write('  ')),
     write(' | ').
 
-%Print specified piece
+% Print specified piece
 print_piece(king)   :- write('k').
 print_piece(queen)  :- write('q').
 print_piece(rook)   :- write('r').
