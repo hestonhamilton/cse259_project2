@@ -175,7 +175,7 @@ bookA( [ state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % e2e4
     piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-7, e-5).
 
 
-% Code for alpha beta prunning
+% Code for alpha beta pruning
 % Player is playerA, Turn is the player whose turn is to play
 sufficientA(Player, Board, Turn, [], Depth, Alpha, Beta, Move, Val, Move, Val) :- !.
 sufficientA(Player, Board, Turn, Moves, Depth, Alpha, Beta, Move, Val, Move, Val) :-
@@ -255,7 +255,7 @@ bookB( [ state(white, WhiteKing, WhiteKingRook, WhiteQueenRook), % e2e4
     piece(h-2, white, pawn  ), piece(e-4, white, pawn  ) ], e-7, e-5).
 
 
-% Code for alpha beta prunning
+% Code for alpha beta pruning
 % Player is playerB, Turn is the player whose turn is to play
 sufficientB(Player, Board, Turn, [], Depth, Alpha, Beta, Move, Val, Move, Val) :- !.
 sufficientB(Player, Board, Turn, Moves, Depth, Alpha, Beta, Move, Val, Move, Val) :-
@@ -470,8 +470,8 @@ report_move(Color, Board, From_File-From_Rank, To_File-To_Rank, Rating) :-
 /*         KEEP THE NAME print_board, JUST CHANGE THE IMPLEMENTATION*/
 /* ----------------------------------------------------------------------- */
 print_board(Board) :-
-    write('  +----+----+----+----+----+----+----+----+'), nl, %Print top border
-    print_rank(8, Board), %Following code will print cooridinates for board
+    write('  +----+----+----+----+----+----+----+----+'), nl, % Print top border
+    print_rank(8, Board), % Following code will print coordinates for board
     print_rank(7, Board),
     print_rank(6, Board),
     print_rank(5, Board),
@@ -493,16 +493,16 @@ print_rank(Rank, Board) :-
     print_file(g, Rank, Board),
     print_file(h, Rank, Board),
     nl,
-    write('  +----+----+----+----+----+----+----+----+'), nl. %Print bottom border
+    write('  +----+----+----+----+----+----+----+----+'), nl. % Print bottom border
 
-%Print pieces and spacers
+% Print pieces and spacers
 print_file(File, Rank, Board) :-
     (member(piece(File-Rank, black, Type), Board) -> write('*'), print_piece(Type);
      member(piece(File-Rank, white, Type), Board) -> write(' '), print_piece(Type);
      write('  ')),
     write(' | ').
 
-%Print specified piece
+% Print specified piece
 print_piece(king)   :- write('k').
 print_piece(queen)  :- write('q').
 print_piece(rook)   :- write('r').
